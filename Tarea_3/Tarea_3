@@ -1,0 +1,108 @@
+
+--PREGUNTA 1
+
+CREATE TABLE Pais (
+    nombre varchar(50) PRIMARY KEY,
+    impuesto DECIMAL NOT NULL,
+    costo_envio INTEGER NOT NULL
+);
+
+CREATE TABLE Producto(
+	id INTEGER PRIMARY KEY,
+	nombre varchar(50) NOT NULL,
+	precio INTEGER NOT NULL,
+	origen varchar(50) NOT NULL
+                     REFERENCES  Pais(nombre)
+
+);
+CREATE TABLE Disponibilidad(
+	producto INTEGER NOT NULL
+		REFERENCES Producto(id) ON DELETE CASCADE,
+	pais varchar(50) NOT NULL
+		REFERENCES Pais(nombre) ON DELETE CASCADE,
+	PRIMARY KEY (producto,pais)
+);
+
+CREATE TABLE Venta(
+	id INTEGER PRIMARY KEY,
+	fecha DATE NOT NULL,
+	destino varchar(50) NOT NULL
+		REFERENCES Pais(nombre) ON DELETE CASCADE,
+	direccion varchar(50) NOT NULL
+);
+
+CREATE TABLE ProductoVenta(
+	producto INTEGER NOT NULL
+		REFERENCES Producto(id) ON DELETE CASCADE,
+	venta INTEGER NOT NULL
+		REFERENCES venta(id) ON DELETE CASCADE,
+	cantidad INTEGER NOT NULL,
+		PRIMARY KEY (producto,venta)
+);
+
+--PREGUNTA 2
+--paises
+INSERT INTO Pais (nombre,impuesto,costo_envio)
+	VALUES ('Estados Unidos','0.25','1000');
+
+INSERT INTO Pais (nombre,impuesto,costo_envio)
+	VALUES ('Chile','0.19','1500');
+
+INSERT INTO Pais (nombre,impuesto,costo_envio)
+	VALUES ('Belgica','0.35','2000');
+
+--productos
+INSERT INTO Producto (id,nombre,precio,origen)
+	VALUES ('1','Chocolate','1000','Estados Unidos');
+
+INSERT INTO Producto (id,nombre,precio,origen)
+	VALUES ('2','Helado','2000','Belgica');
+
+--venta
+INSERT INTO Venta (id,fecha,destino,direccion)
+	VALUES ('1','2020-05-20','Chile','San Carlos de Apoquindo 2200');
+
+--productoVenta
+INSERT INTO ProductoVenta (producto,venta,cantidad)
+	VALUES ('1','1','5');
+
+INSERT INTO ProductoVenta (producto,venta,cantidad)
+	VALUES ('2','1','10');
+
+
+--PREGUNTA 3
+INSERT INTO Producto (id,nombre,precio,origen)
+	VALUES ('5','Pelotas tenis','3000','Estados Unidos');
+
+INSERT INTO Venta (id,fecha,destino,direccion)
+	VALUES ('2','2020-06-20','Belgica','San Carlos de Apoquindo 2201');
+
+INSERT INTO ProductoVenta (producto,venta,cantidad)
+	VALUES ('5','2','2');
+
+UPDATE ProductoVenta SET cantidad = cantidad * 3
+	WHERE producto='5';
+
+UPDATE Producto SET precio = precio /3
+	WHERE id ='5';
+
+
+--PREGUNTA 4
+DELETE FROM Venta
+    WHERE Venta.destino='Chile' and Venta.fecha>'2020-03-16';
+
+--PREGUNTA 5
+INSERT INTO Venta (id,fecha,destino,direccion)
+	VALUES ('3','2020-07-20','Estados Unidos','San Carlos de Apoquindo 2202');
+
+INSERT INTO ProductoVenta (producto,venta,cantidad)
+	VALUES ('2','3','5');
+
+SELECT p.nombre,p.precio,pv.cantidad FROM ProductoVenta pv,Producto p
+    WHERE pv.producto=p.id and pv.venta='3';
+
+
+--PREGUNTA 6
+
+SELECT pr.nombre,pr.precio,p.costo_envio,p.impuesto FROM Producto pr,Pais p
+    WHERE pr.origen=p.nombre;
