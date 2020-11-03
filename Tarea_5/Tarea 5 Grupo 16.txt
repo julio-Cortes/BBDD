@@ -1,0 +1,62 @@
+-- CONSULTAS TAREA 5
+--1.- Agregar una categoría nueva dentro del departamento de Golf (id=5). Puede llamarla comousted desee.
+INSERT INTO categories(category_id, category_departament_id, category_name) VALUES (50,5,'Categoría Tarea 5');
+--2.- Mostrar el identificador y el precio total (de todos los items de la orden), de las ordenes pendientes de pago (PENDING_PAYMENT)
+SELECT o.order_id , SUM(ot.order_item_subtotal)
+    FROM orders o, order_items ot
+        WHERE o.order_id = ot.order_item_order_id AND o.order_status = 'PENDING_PAYMENT'
+            GROUP BY o.order_id;
+--3.- Mostrar la cantidad de categorías que tiene el departamento Golf (id=5)
+SELECT COUNT(c.category_id)
+    FROM categories c, departments d
+        WHERE c.category_departament_id=d.department_id AND d.department_name = 'Golf';
+--4.- Mostrar los nombres de las categorías que finalizan con ll, como por ejemplo Basketball.Ordenados alfabéticamente
+SELECT c.category_name
+    FROM categories c
+        WHERE c.category_name LIKE '%ll';
+--5.- Mostrar los 20 usuarios con menos compras
+SELECT c.customer_id, c.customer_fname, c.customer_lname
+    FROM customers c, (SELECT DISTINCT o.order_customer_id, COUNT(*) AS count
+                            FROM orders o
+                                GROUP BY o.order_customer_id
+                                    ORDER BY count ASC
+                                        LIMIT 20) t1
+        WHERE t1.order_customer_id=c.customer_id;
+--6.- Mostrar las categorías más populares.
+-- --> Decidimos buscar la categoria más popular (mediante cual tiene mas ventas), según esto buscamos la categoría
+-- con más ventas y entregamos todas las categorías que tengas esa cantidad de ventas (en este caso solo 1).
+-- Si quisiera un "top" bastaría con ordenar la tabla t1 en orden ASC y luego ponerle un LIMIT del top que se desee.
+-- Finalmente se tendría que sacar la última condición del WHERE donde se compara con un valor máximo.
+SELECT c2.category_id,c2.category_name
+    FROM (SELECT c.category_id, COUNT(ot.order_item_quantity) AS count
+            FROM order_items ot, products p, categories c
+                WHERE ot.order_item_product_id=p.product_id AND c.category_id=p.product_category_id
+                    GROUP BY c.category_id) t1, categories c2, (SELECT MAX(t2.count) AS max
+                                                                    FROM (SELECT c.category_id, COUNT(ot.order_item_quantity) AS count
+                                                                            FROM order_items ot, products p, categories c
+                                                                                WHERE ot.order_item_product_id=p.product_id AND c.category_id=p.product_category_id
+                                                                                    GROUP BY c.category_id) t2) t3
+        WHERE c2.category_id=t1.category_id AND t1.count=t3.max;
+--7.- Actualizar el customer_zipcode a 7550432 de todos los clientes que residen en el estado de NY.
+UPDATE customers SET customer_zipcode = 7550432
+    WHERE customer_state = 'NY';
+--8.- Los 5 productos con el precio más altos y sus respectivos departamentos.
+SELECT p2.product_id, p2.product_name, d.department_id, d.department_name
+    FROM (SELECT p.product_id, p.product_price
+            FROM products p
+                ORDER BY p.product_price DESC
+                    LIMIT 5) t1, categories c, departments d, products p2
+        WHERE p2.product_id=t1.product_id AND c.category_departament_id=d.department_id AND p2.product_category_id=c.category_id;
+--9.- Mostrar todos los productos cuya descripción no es nula.
+SELECT p.product_id,p.product_name
+    FROM products p
+        WHERE p.product_description IS NOT NULL;
+--10.- Mostrar todas las ordenes que posean al menos 1 item cuyo valor total sobrepase los 1500 usd
+-- (Suponiendo que por item se refieren a cada id de order_items)
+SELECT o.order_id, o.order_date, o.order_customer_id, o.order_status
+    FROM orders o, order_items ot
+        WHERE o.order_id=ot.order_item_order_id AND ot.order_item_subtotal>1500;
+--(Suponiendo que por item se refieren a productos)
+SELECT o.order_id, o.order_date, o.order_customer_id, o.order_status
+    FROM orders o, order_items ot
+        WHERE o.order_id=ot.order_item_order_id AND ot.order_item_product_price>1500;

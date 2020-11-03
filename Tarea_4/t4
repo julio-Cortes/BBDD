@@ -1,0 +1,47 @@
+CREATE TABLE Chofer (
+    id serial PRIMARY KEY,
+    nombre varchar(50),
+    apellido varchar(50)
+);
+
+CREATE TABLE Recorrido (
+    nombre varchar(50) PRIMARY KEY
+);
+
+CREATE TABLE Bus(
+    patente varchar(50) PRIMARY KEY
+);
+
+CREATE TABLE Capacitacion(
+    chofer serial REFERENCES Chofer(id) ON DELETE CASCADE,
+    recorrido varchar(50) REFERENCES Recorrido(nombre) ON DELETE CASCADE,
+    PRIMARY KEY (chofer,recorrido)
+);
+
+CREATE TABLE Viaje(
+    id serial PRIMARY KEY,
+    chofer serial REFERENCES Chofer(id) ON DELETE CASCADE,
+    recorrido varchar(50) REFERENCES Recorrido(nombre) ON DELETE CASCADE,
+    bus varchar(50) REFERENCES Bus(patente) ON DELETE CASCADE,
+    inicio timestamp,
+    fin timestamp
+);
+INSERT INTO Chofer(nombre,apellido) values ('nombre1','apellido1');
+INSERT INTO Chofer(nombre,apellido) values ('nombre2','apellido2');
+
+INSERT INTO Recorrido(nombre) values ('C09');
+INSERT INTO Recorrido(nombre) values ('C03');
+INSERT INTO Capacitacion(chofer,recorrido) values ('1','C09');
+INSERT INTO Bus(patente) values ('ABCAAA');
+INSERT INTO Bus(patente) values ('ABAAAA');
+INSERT INTO Viaje (chofer,recorrido,bus,inicio,fin) values ('1','C09','ABCAAA','2020-01-01 00:00:00','2020-01-01 00:00:01');
+INSERT INTO Viaje (chofer,recorrido,bus,inicio,fin) values ('2','C03','ABAAAA','2020-01-01 00:00:00','2020-01-01 00:00:01');
+INSERT INTO Viaje (chofer,recorrido,bus,inicio,fin) values ('1','C03','ABAAAA','2020-01-01 00:00:00','2020-01-01 00:00:01');
+--1
+Select v.recorrido,t1.choferes
+    From Viaje v LEFT JOIN (select v.recorrido,count(*) choferes from viaje v, capacitacion c Where v.recorrido=c.recorrido group by v.recorrido) t1 on t1.recorrido=v.recorrido;
+
+
+--3
+Select c.nombre, c.apellido from viaje v,chofer c
+    Where v.chofer NOT IN (select v.chofer from viaje v where v.bus LIKE 'ABC%') and c.id=v.chofer;

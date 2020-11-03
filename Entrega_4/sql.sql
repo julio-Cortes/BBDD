@@ -1,3 +1,5 @@
+---TABLAS
+
 CREATE TABLE Usuarios (
 	ID_Usuario serial PRIMARY KEY,
     numero_telefono varchar(11) NOT NULL,
@@ -50,62 +52,48 @@ CREATE TABLE Descuentos (
 
 CREATE TABLE Usuarios_Promociones
 (
-    ID_Usuario_Promocion serial  ,
+    ID_Usuario_Promocion serial PRIMARY KEY ,
     ID_Usuario INTEGER NOT NULL
         REFERENCES Usuarios (ID_Usuario) ON DELETE CASCADE,
     Codigo INTEGER NOT NULL
         REFERENCES Promociones (Codigo) ON DELETE CASCADE,
-    Numero_de_usos INTEGER NOT NULL,
-    PRIMARY KEY (ID_Usuario_Promocion, ID_Usuario, Codigo),
-    UNIQUE(ID_Usuario_Promocion)
+    Numero_de_usos INTEGER NOT NULL
 );
 
 CREATE TABLE Usuarios_Direcciones(
-	ID_Usuario_Direccion serial,
+	ID_Usuario_Direccion serial PRIMARY KEY,
 	ID_Usuario INTEGER NOT NULL
 		REFERENCES Usuarios(ID_Usuario ) ON DELETE CASCADE,
 	ID_Direccion INTEGER NOT NULL
-		REFERENCES Direcciones(ID_Direccion  ) ON DELETE CASCADE,
-	PRIMARY KEY (ID_Usuario_Direccion  , ID_Usuario , ID_Direccion )
-);
-
-CREATE TABLE Locales_Categorias(
-	ID_Local_Categoria serial,
-	ID_Local INTEGER NOT NULL
-		REFERENCES Locales(ID_Local) ON DELETE CASCADE,
-	ID_Categoria INTEGER NOT NULL
-		REFERENCES Categorias(ID_Categoria) ON DELETE CASCADE,
-	PRIMARY KEY (ID_Local_Categoria, ID_Local,ID_Categoria)
+		REFERENCES Direcciones(ID_Direccion  ) ON DELETE CASCADE
 );
 
 CREATE TABLE Usuarios_Locales_Rating(
-	ID_Usuario_Local_Rating serial,
+	ID_Usuario_Local_Rating serial PRIMARY KEY,
 	ID_Usuario INTEGER NOT NULL
 		REFERENCES Usuarios(ID_Usuario) ON DELETE CASCADE,
 	ID_Local INTEGER NOT NULL
 		REFERENCES Locales(ID_Local) ON DELETE CASCADE,
-	rating INTEGER NOT NULL,
-	PRIMARY KEY (ID_Usuario_Local_Rating, ID_Usuario, ID_Local)
+	rating INTEGER NOT NULL
 );
+
+CREATE TABLE Locales_Categorias(
+	ID_Local_Categoria serial PRIMARY KEY,
+	ID_Local INTEGER NOT NULL
+		REFERENCES Locales(ID_Local) ON DELETE CASCADE,
+	ID_Categoria INTEGER NOT NULL
+		REFERENCES Categorias(ID_Categoria) ON DELETE CASCADE
+);
+
 
 CREATE TABLE Usuarios_Locales_Favoritos(
-	ID_Usuario_Local_Favorito serial,
+	ID_Usuario_Local_Favorito serial PRIMARY KEY,
 	ID_Usuario INTEGER NOT NULL
 		REFERENCES Usuarios(ID_Usuario) ON DELETE CASCADE,
 	ID_Local INTEGER NOT NULL
-		REFERENCES Locales(ID_Local) ON DELETE CASCADE,
-	PRIMARY KEY (ID_Usuario_Local_Favorito, ID_Usuario, ID_Local)
+		REFERENCES Locales(ID_Local) ON DELETE CASCADE
 );
 
-CREATE TABLE Usuarios_Repartidores_Rating(
-	ID_Usuario_Repartidor_Rating serial,
-	ID_Usuario INTEGER NOT NULL
-		REFERENCES Usuarios(ID_Usuario) ON DELETE CASCADE,
-	ID_Repartidor INTEGER NOT NULL
-		REFERENCES Repartidores(ID_Repartidor) ON DELETE CASCADE,
-	rating INTEGER NOT NULL,
-	PRIMARY KEY (ID_Usuario_Repartidor_Rating, ID_Usuario, ID_Repartidor)
-);
 
 CREATE TABLE Productos(
 	ID_Producto serial PRIMARY KEY,
@@ -128,12 +116,11 @@ CREATE TABLE Menus(
 );
 
 CREATE TABLE Menus_Productos(
-	ID_Menu_Producto serial,
+	ID_Menu_Producto serial PRIMARY KEY,
 	ID_Producto INTEGER NOT NULL
 		REFERENCES Productos(ID_Producto) ON DELETE CASCADE,
 	ID_Menu INTEGER NOT NULL
-		REFERENCES Menus(ID_Menu) ON DELETE CASCADE,
-	PRIMARY KEY (ID_Menu_Producto, ID_Producto, ID_Menu)
+		REFERENCES Menus(ID_Menu) ON DELETE CASCADE
 );
 
 
@@ -148,32 +135,31 @@ CREATE TABLE Pedidos(
     precio INTEGER NOT NULL,
     ID_Direccion INTEGER NOT NULL
         REFERENCES Direcciones(ID_Direccion) ON DELETE CASCADE,
-	fecha DATE NOT NULL
+	fecha DATE NOT NULL,
+	Rating_repartidor INTEGER
 );
 
 
 
 CREATE TABLE Pedidos_Productos(
-	ID_Pedido_Producto serial,
+	ID_Pedido_Producto serial PRIMARY KEY,
 	ID_Pedido INTEGER NOT NULL
 		REFERENCES Pedidos(ID_Pedido) ON DELETE CASCADE,
 	ID_Producto INTEGER NOT NULL
 		REFERENCES Productos(ID_Producto ) ON DELETE CASCADE,
-	cantidad INTEGER NOT NULL,
-	PRIMARY KEY (ID_Pedido_Producto, ID_Pedido, ID_Producto)
+	cantidad INTEGER NOT NULL
 );
 
 CREATE TABLE Pedidos_Menus(
-	ID_Pedido_Menu serial,
+	ID_Pedido_Menu serial PRIMARY KEY,
 	cantidad INTEGER NOT NULL,
 	ID_Pedido INTEGER NOT NULL
 		REFERENCES Pedidos(ID_Pedido) ON DELETE CASCADE,
 	ID_Menu INTEGER NOT NULL
-		REFERENCES Menus(ID_Menu) ON DELETE CASCADE,
-	PRIMARY KEY (ID_Pedido_Menu, ID_Pedido, ID_Menu)
+		REFERENCES Menus(ID_Menu) ON DELETE CASCADE
 );
 
-
+---INSERT
 
 INSERT INTO Usuarios (ID_Usuario,Numero_telefono,nombre,clave,email)values('0000','56958931626','María José Marfán','0305','mjmarfan@miuandes.cl');
 INSERT INTO Usuarios (ID_Usuario,Numero_telefono,nombre,clave,email)values('0001','56962067320','María Francisca Binder','9323','mfbinder@uc.cl');
@@ -484,6 +470,16 @@ INSERT INTO Usuarios_Direcciones (ID_Usuario_Direccion,ID_Usuario,ID_Direccion)v
 INSERT INTO Usuarios_Direcciones (ID_Usuario_Direccion,ID_Usuario,ID_Direccion)values('0024','0018','0024');
 INSERT INTO Usuarios_Direcciones (ID_Usuario_Direccion,ID_Usuario,ID_Direccion)values('0025','0019','0025');
 
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0000','0000','0000');
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0001','0000','0004');
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0002','0005','0002');
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0003','0001','0003');
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0004','19','6');
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0005','18','18');
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0006','01','00');
+INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0007','02','09');
+
+
 INSERT INTO Usuarios_Locales_Rating (ID_Usuario_Local_Rating,ID_Usuario,ID_Local,rating)values('0','0000','0001','3');
 INSERT INTO Usuarios_Locales_Rating (ID_Usuario_Local_Rating,ID_Usuario,ID_Local,rating)values('1','0001','0000','5');
 INSERT INTO Usuarios_Locales_Rating (ID_Usuario_Local_Rating,ID_Usuario,ID_Local,rating)values('2','0002','0002','4');
@@ -494,22 +490,6 @@ INSERT INTO Usuarios_Locales_Rating (ID_Usuario_Local_Rating,ID_Usuario,ID_Local
 INSERT INTO Usuarios_Locales_Rating (ID_Usuario_Local_Rating,ID_Usuario,ID_Local,rating)values('7','0005','0000','4');
 INSERT INTO Usuarios_Locales_Rating (ID_Usuario_Local_Rating,ID_Usuario,ID_Local,rating)values('8','0005','0000','4');
 
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('0','0000','0001','3');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('1','0001','0000','5');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('2','0002','0002','4');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('3','0003','0001','5');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('4','0003','0002','2');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('5','0004','0001','4');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('6','0004','0002','5');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('7','0005','0000','4');
-INSERT INTO Usuarios_Repartidores_Rating (ID_Usuario_Repartidor_Rating,ID_Usuario,ID_Repartidor,rating)values('8','0005','0000','4');
-
-INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0000','0000','0000');
-INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0001','0000','0004');
-INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0002','0005','0002');
-INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0003','0001','0003');
-INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0004','19','6');
-INSERT INTO Usuarios_Locales_Favoritos (ID_Usuario_Local_Favorito,ID_Usuario,ID_Local)values('0005','18','18');
 
 INSERT INTO Locales_Categorias (ID_Local_Categoria,ID_Local,ID_Categoria)values('0000','0000','0004');
 INSERT INTO Locales_Categorias (ID_Local_Categoria,ID_Local,ID_Categoria)values('0001','0001','0001');
@@ -539,6 +519,8 @@ INSERT INTO Locales_Categorias (ID_Local_Categoria,ID_Local,ID_Categoria)values(
 INSERT INTO Locales_Categorias (ID_Local_Categoria,ID_Local,ID_Categoria)values('0025','0017','0012');
 INSERT INTO Locales_Categorias (ID_Local_Categoria,ID_Local,ID_Categoria)values('0026','0018','0012');
 INSERT INTO Locales_Categorias (ID_Local_Categoria,ID_Local,ID_Categoria)values('0027','0019','0009');
+INSERT INTO Locales_Categorias (ID_Local_Categoria,ID_Local,ID_Categoria)values('0028','0006','0005');
+
 
 INSERT INTO Menus_Productos (ID_Menu_Producto,ID_Menu,ID_Producto)values('0000','0000','0010');
 INSERT INTO Menus_Productos (ID_Menu_Producto,ID_Menu,ID_Producto)values('0001','0000','0011');
@@ -590,21 +572,21 @@ INSERT INTO Menus_Productos (ID_Menu_Producto,ID_Menu,ID_Producto)values('0046',
 INSERT INTO Menus_Productos (ID_Menu_Producto,ID_Menu,ID_Producto)values('0047','0020','0148');
 INSERT INTO Menus_Productos (ID_Menu_Producto,ID_Menu,ID_Producto)values('0048','0020','0149');
 
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0000','0000','0001','0000','0000','22-08-2020','5500');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0001',NULL,'0000','0001','0002','23-08-2020','4356');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0002',0002,'0002','0002','0005','25-08-2020','23050');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0003',0004,'0005','0000','0003','26-08-2020','50980');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0004',NULL,'0004','0001','0004','29-08-2020','10500');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0005',0001,'0003','0002','0001','30-08-2020','6000');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0006',0003,'0005','0000','0003','01-09-2020','4560');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0007',NULL,'0003','0001','0001','02-09-2020','9800');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0008',0004,'0004','0002','0004','15-09-2020','34500');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0009',0001,'0010','0003','0010','09-09-2020','10000');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0010',0002,'0011','0004','0015','10-09-2020','38900');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0011',NULL,'0016','0001','0022','10-09-2020','45690');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0012',NULL,'0017','0000','0023','11-09-2020','19980');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0013',NULL,'0018','0003','0024','11-09-2020','200000');
-INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio)values('0014',NULL,'0019','0004','0025','11-09-2020','50000');
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0000',0000,'0001','0000','0000','22-08-2020','5500',5);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0001',NULL,'0000','0001','0002','23-08-2020','4356',3);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0002',0002,'0002','0002','0005','25-08-2020','23050',4);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0003',0004,'0005','0000','0003','26-08-2020','50980',4);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0004',NULL,'0004','0001','0004','29-08-2020','10500',4);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0005',0001,'0003','0002','0001','30-08-2020','6000',2);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0006',0003,'0005','0000','0003','01-09-2020','4560',5);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0007',NULL,'0003','0001','0001','02-09-2020','9800',4);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0008',0004,'0004','0002','0004','15-09-2020','34500',4);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0009',0001,'0010','0003','0010','09-09-2020','10000',5);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0010',0002,'0011','0004','0015','10-09-2020','38900',5);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0011',NULL,'0016','0001','0022','10-09-2020','45690',4);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0012',NULL,'0017','0000','0023','11-09-2020','19980',3);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0013',NULL,'0018','0003','0024','11-09-2020','200000',5);
+INSERT INTO Pedidos (ID_Pedido,ID_Usuario_Promocion,ID_Usuario,ID_Repartidor,ID_Direccion,fecha,precio,Rating_repartidor)values('0014',NULL,'0019','0004','0025','11-09-2020','50000',5);
 
 INSERT INTO Pedidos_Menus (ID_Pedido_Menu,ID_Pedido,ID_Menu,cantidad)values('0000','0000','0001','1');
 INSERT INTO Pedidos_Menus (ID_Pedido_Menu,ID_Pedido,ID_Menu,cantidad)values('0002','0001','0000','2');
@@ -634,3 +616,5 @@ INSERT INTO Pedidos_Productos (ID_Pedido_Producto, ID_Pedido, ID_Producto,cantid
 INSERT INTO Pedidos_Productos (ID_Pedido_Producto, ID_Pedido, ID_Producto,cantidad)values('0019','0010','0034','8');
 INSERT INTO Pedidos_Productos (ID_Pedido_Producto, ID_Pedido, ID_Producto,cantidad)values('0020','0011','0145','3');
 INSERT INTO Pedidos_Productos (ID_Pedido_Producto, ID_Pedido, ID_Producto,cantidad)values('0023','0014','0132','2');
+
+
