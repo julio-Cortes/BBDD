@@ -1,0 +1,19 @@
+UPDATE  pg_language set lanpltrusted = true where lanname='plpythonu';
+create language  plpythonu;
+
+CREATE function revisar_nombre() RETURNS trigger
+as $$
+    n = plpy.execute("SELECT nombre FROM productos p WHERE p.nombre = {}".format(TD['new']['productos']))
+    if TD['new']['nombre'] != n[0]['nombre']:
+        return "SKIP"
+    return "OK"
+$$ LANGUAGE plpythonu;
+
+CREATE function revisar_rating() RETURNS trigger
+as $$
+    r = plpy.execute("SELECT id_usuario_locales_rating FROM usuarios_locales_rating ulr WHERE ulr.id_usuario = {}".format(TD['new']['id_usuario_local_rating']))
+    for linea in r:
+        if TD['new']['id_usuario_locales_rating'] == linea['id_usuario_locales_rating'] and TD['new']['id_local'] = linea['id_local']:
+            return "SKIP"
+    return "OK
+$$ LANGUAGE plpythonu;

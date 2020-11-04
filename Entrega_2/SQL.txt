@@ -103,7 +103,7 @@ CREATE TABLE Usuarios_Locales_Favoritos(
 CREATE TABLE Productos(
 	ID_Producto serial PRIMARY KEY,
 	ID_Local INTEGER NOT NULL
-		REFERENCES Locales(ID_Local) ON DELETE CASCADE,
+		REFERENCES Locales(ID_Local),
 	ID_Descuento INTEGER
 		REFERENCES Descuentos(ID_Descuento),
     nombre varchar(50) NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE Productos(
 CREATE TABLE Menus(
 	ID_Menu serial PRIMARY KEY,
 	ID_Local INTEGER NOT NULL
-		REFERENCES Locales(ID_Local) ON DELETE CASCADE,
+		REFERENCES Locales(ID_Local),
 	ID_Descuento INTEGER
 		REFERENCES Descuentos(ID_Descuento),
     nombre varchar(50) NOT NULL,
